@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>KUSODEKA//IMG</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Generate kusodeka image">
+  </head>
+
+  <body>
+    <div>
+      <h1>クソデカ画像生成侍</h1>
+      w: <input id="w" type="number" value="640">
+      h: <input id="h" type="number" value="480">
+      <select id="type" value="image/png">
+        <option value="image/png">PNG</option>
+        <option value="image/jpeg">JPG</option>
+        <option value="image/webp">WEBP</option>
+      </select>
+      <button id="generate">Run</button>
+    </div>
+    <div>ファイルサイズ: <span id="size">-</span></div>
+    <img id="result">
+
+    <script>
+function generate () {
+    let w = document.getElementById("w").value;
+    let h = document.getElementById("h").value;
+
+    let canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+
+    let ctx = canvas.getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, w, h);
+    gradient.addColorStop(0, "blue");
+    gradient.addColorStop(1, "red");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, w, h);
+
+    const dataurl = canvas.toDataURL(document.getElementById("type").value, 1.0);
+    const ix = dataurl.indexOf(',');
+    const size = ix < 0 ? 0 : Math.ceil((dataurl.length - ix - 1) / 4.0 * 3);
+
+    document.getElementById("result").src = dataurl;
+    document.getElementById("size").innerHTML = size > 1000000000 ? (
+        size / 1000000000 + "GBytes"
+    ) : size > 1000000 ? (
+        size / 1000000 + "MBytes"
+    ) : size > 1000 ? (
+        size / 1000 + "KBytes"
+    ) : (
+        size + "Bytes"
+    );
+}
+
+document.getElementById("generate").onclick = generate;
+    </script>
+  </body>
+
+</html>
